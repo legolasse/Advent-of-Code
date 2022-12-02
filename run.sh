@@ -11,7 +11,7 @@ if [ "$#" -eq 2 ]; then
 fi
 
 cppFile=P$1.cpp
-exeFile=P$1.exe
+exeFile=P$1.bin
 
 if [ ! -f "$cppFile" ]
 then
@@ -24,24 +24,13 @@ then
   exit 2
 fi
 
-timeCPP=`stat -c "%Y" $cppFile`
-timeA=0
-if [ -f $exeFile ]
+echo "Compiling $cppFile ..." 1>&2
+cat top.cpp P$1.cpp > tmp.cpp
+g++ -Wall tmp.cpp -o $exeFile
+if [ $? -ne 0 ]
 then
-timeA=`stat -c "%Y" $exeFile`
-fi
-
-if [ $timeA -lt $timeCPP ]
-then
-  echo "Compiling $cppFile ..." 1>&2
-  cat top.cpp P$1.cpp > tmp.cpp
-  g++ -Wall tmp.cpp -o $exeFile
-  if [ $? -ne 0 ]
-  then
-    echo "Compile error. Stop." 1>&2
-    exit 3
-  fi
-  cat tmp.cpp > /dev/clipboard
+  echo "Compile error. Stop." 1>&2
+  exit 3
 fi
 
 echo "Running ./$exeFile < $testFile" 1>&2

@@ -21,6 +21,17 @@ int main() {
       break;
     }
     sum += score1[own];
+
+    /*
+      // Task 1: Use this code instead for updating sum:
+      if(i1 == i2) {
+        sum += 3; // Draw
+      }
+      else if(i1 == (i2+2)%3) {
+        sum += 6; // Win
+      }
+      sum += score1[i2];
+     */
   }
   cout << sum << endl;
 } // int main
