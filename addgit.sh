@@ -10,4 +10,4 @@ if [ "$#" -eq 2 ]; then
   sourceFile=P$1.$2
 fi
 
-git add keywords.txt $sourceFile && git commit -m "Added P$1." && git status
+git add keywords.txt $sourceFile && git commit -m "Added P$1." && git push origin master
