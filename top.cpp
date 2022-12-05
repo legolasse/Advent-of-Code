@@ -41,6 +41,7 @@ using namespace std;
 #define GL(N) long N; cin >> N;
 #define GD(N) double N; cin >> N;
 #define GS(N) string N; cin >> N;
+#define GC(N) char N; cin >> N;
 
 typedef unsigned long long ULL;
 typedef long long LL;
