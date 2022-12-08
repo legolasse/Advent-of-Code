@@ -38,7 +38,7 @@ int main() {
     FORI(move) {
       char c = stacks[from-1].top();
       stacks[from-1].pop();
-      tmp.push(c);
+      tmp.push(c); // For problem 1, simply dump directly into to-stack
     }
     FORI(move) {
       char c = tmp.top();
