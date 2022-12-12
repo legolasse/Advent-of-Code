@@ -1,8 +1,6 @@
 int main() {
   vector<PI> tail_positions;
-  PI rope[10]; // For answer 1, use 2 instead of 20
-  FORI(10)
-    rope[i] = PI(0,0);
+  PI rope[10]; // For answer 1, use 2 instead of 10
 
   char dir;
   int steps;
@@ -59,16 +57,15 @@ int main() {
 	}
       }
       
-      tail_positions.push_back(rope[9]);
+      tail_positions.push_back(rope[10-1]);
     } // FOR steps
   } // parse input
 
-  // Get answer 1:
   sort(tail_positions.begin(), tail_positions.end());
-  int answer1 = 1;
+  int answer = 1;
   FORUI(tail_positions.size()-1) {
     if(tail_positions[i+1] != tail_positions[i])
-      answer1++;
+      answer++;
   }
-  cout << answer1 << endl;
+  cout << answer << endl;
 }
