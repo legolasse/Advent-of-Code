@@ -17,7 +17,7 @@ int main() {
   FORX(width) {
     FORY(height) {
       steps[y][x] = BIG;
-      if(M[y][x] == 'S' || M[y][x] == 'a') {
+      if(M[y][x] == 'S' || M[y][x] == 'a') { // Remove second condition for part 1.
 	steps[y][x] = 0;
 	M[y][x] = 'a'; // Ensure not special.
 	cout << "Start: " << x << ", " << y << endl;
