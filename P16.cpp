@@ -188,26 +188,8 @@ int main() {
   cout << endl;
 
   // Task 2:
-  // Open two at a time...
   int bestEver;
+  cout << "Answer 2 to be computed below:"<<endl;
   go2(0, 0, 26, 26, 0, 0, bestEver);
-  // 2068 too low!
-  // 2117?
-  /*
-1 OX: 19
-2 YS: 24
-3 XN: 7
-4 AM: 6
-5 IH: 8
-6 ZR: 18
-7 FP: 14
-8 OG: 12
-9 UI: 4
-10 GU: 11
-11 KT: 17
-12 DB: 23
-13 YK: 16
-14 VC: 5
-15 UU: 15
-   */
+  cout << "Done" << endl;
 }
