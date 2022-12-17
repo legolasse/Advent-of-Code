@@ -26,7 +26,7 @@ fi
 
 echo "Compiling $cppFile ..." 1>&2
 cat top.cpp P$1.cpp > tmp.cpp
-g++ -Wall tmp.cpp -o $exeFile
+g++ -o2 -Wall tmp.cpp -o $exeFile
 if [ $? -ne 0 ]
 then
   echo "Compile error. Stop." 1>&2
