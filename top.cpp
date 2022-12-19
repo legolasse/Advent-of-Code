@@ -30,6 +30,7 @@ using namespace std;
 #define FORK(N) for(int k = 0; k < N; ++k)
 #define FORX(N) for(int x = 0; x < N; ++x)
 #define FORY(N) for(int y = 0; y < N; ++y)
+#define FORZ(N) for(int z = 0; z < N; ++z)
 #define FORUI(N) for(unsigned int i = 0; i < N; ++i)
 #define FORUJ(N) for(unsigned int j = 0; j < N; ++j)
 #define FORUK(N) for(unsigned int k = 0; k < N; ++k)
