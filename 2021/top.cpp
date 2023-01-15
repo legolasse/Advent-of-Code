@@ -40,6 +40,7 @@ using namespace std;
 #define FORIT2(T, N) for(T::const_iterator it2 = N.begin(); it2 != N.end(); ++it2)
 #define GI(N) int N; cin >> N;
 #define GL(N) long N; cin >> N;
+#define GLL(N) long long N; cin >> N;
 #define GD(N) double N; cin >> N;
 #define GS(N) string N; cin >> N;
 #define GC(N) char N; cin >> N;
