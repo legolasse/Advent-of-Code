@@ -1,4 +1,4 @@
-# Advent-of-Code-2022
+# Advent-of-Code by Lasse Deleuran
 
 For day XX, program PXX.cpp is created with top.cpp being common for all days.
 
