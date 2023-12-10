@@ -11,7 +11,7 @@ int main() {
   while(getline(cin, line)) {
     stringstream ss; ss << line;
     ss >> ignore >> gameID;
-    cout << "Game " << gameID << " instances: " << instances[games] << endl;
+    //cout << "Game " << gameID << " instances: " << instances[games] << endl;
     answer2 += instances[games];
     set<string> own, all;
     while(ss >> s) {      

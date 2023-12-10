@@ -63,17 +63,17 @@ int main() {
   FORY((int)v.size()) {
     FORX((int)v[0].size()) {
       if(get(x, y) != '*') continue;
-      set<LL*> neighbours;
+      set<LL*> null;
       for(int yy = y-1; yy <= y+1; yy++) {
 	for(int xx = x-1; xx <= x+1; xx++) {
 	  if(xx == x && yy == y) continue;
 	  LL* n = getN(xx,yy);
 	  if(n != NULL)
-	    neighbours.insert(n);
+	    null.insert(n);
 	}
       }
-      if(neighbours.size() == 2)
-	answer2 += **neighbours.begin() * **neighbours.rbegin();
+      if(null.size() == 2)
+	answer2 += **null.begin() * **null.rbegin();
     }
   }
   cout << "Answer 2: " << answer2 << endl;

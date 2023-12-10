@@ -34,5 +34,5 @@ int main() {
     
   }
   cout << "Answer 1: " << answer1 << endl;
-  // For answer 2, just manuallly update the input file.
+  // For answer 2, just manually update the input file.
 }
