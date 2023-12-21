@@ -15,18 +15,18 @@ int main() {
     seeds[size++] = seed;
   }
   getline(cin, line); // Empty line
-  cout << size << " seeds" << endl;
+  //cout << size << " seeds" << endl;
 
   // Part 2 setup:
   for(int i = 0; i < size; i+=2) {
     PLL p(seeds[i], seeds[i+1]);
     ranges1.insert(p);
   }
-  cout << "Initial ranges:" << endl;
+  /*cout << "Initial ranges:" << endl;
   FORIT(set<PLL>, ranges1) {
     cout << " " << it->first << " len " << it->second << endl;
   }
-  cout << endl;
+  cout << endl;*/
 
   // Handle each conversion step:
   bool converted[100];
@@ -37,7 +37,7 @@ int main() {
     if(!getline(cin, line)) {
       break; // No top line:
     }
-    cout << line << endl; // Map line
+    //cout << line << endl; // Map line
     
     while(getline(cin, line)) { // Each conversion line:
       if(line == "") {
@@ -45,7 +45,7 @@ int main() {
       }
       stringstream ss; ss << line;
       ss >> dest >> source >> len;
-      cout << source << " -> " << dest << " (" << (dest-source) << ") len " << len << endl;
+      //cout << source << " -> " << dest << " (" << (dest-source) << ") len " << len << endl;
 
       // Part 1:
       FORI(size) {
@@ -70,7 +70,7 @@ int main() {
 	  rangesLeftOver.insert(*it);
 	  continue; // Out of range
 	}
-	cout << " Converting range " << rangeStart << " len " << rangeLen << endl;
+	//cout << " Converting range " << rangeStart << " len " << rangeLen << endl;
 	// We have overlap!
 	if(rangeStart < source) {
 	  rangeLen -= source-rangeStart;
@@ -82,7 +82,7 @@ int main() {
 	// Convert:
 	PLL to(dest + (rangeStart - source), rangeLen);
 	ranges2.insert(to);
-	cout << "  to " << to.XX << " len " << to.YY << endl;
+	//cout << "  to " << to.XX << " len " << to.YY << endl;
 	// Handle left over:
 	if(rangeStart > it->first) {
 	  rangesLeftOver.insert(PLL(it->first, rangeStart-it->first));
@@ -100,12 +100,12 @@ int main() {
     }
     rangesLeftOver.clear();
     ranges2.clear();
-
+    /*
     cout << "Ranges after conversion:" << endl;
     FORIT(set<PLL>, ranges1) {
       cout << " " << it->first << " len " << it->second << endl;
     }
-    cout << endl;
+    cout << endl;*/
   } // For each conversion
 
   // Answer 1:
