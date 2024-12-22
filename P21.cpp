@@ -90,7 +90,6 @@ LL cnt(const int robotsLeft, const string &s) {
   }
 
   cache[robotsLeft][s] = ret;
-  cout << "Caching " << robotsLeft << " " << s << ": " << ret << endl;
   return ret;
 }
 
@@ -121,7 +120,6 @@ int main() {
 
   string line;
   while(getline(cin, line)) {
-    cout << line << ": " << endl;
     LL x = 0, y = 0, z = 0;
     char prev = 'A';
     FORUI(line.size()) {
@@ -137,7 +135,6 @@ int main() {
     answer1 += x * y;
     answer2 += x * z;
   }
-  cout << endl;
 
   cout << "Answer 1: " << answer1 << endl;
   cout << "Answer 2: " << answer2 << endl;
