@@ -59,7 +59,7 @@ int main() {
   
   // Part 2:
   int min = -9, max = 9;
-  for(int a = min; a <= max; a++) {
+  for(int a = -5; a <= max; a++) {
     for(int b = min; b <= max; b++) {
       if(9 + a + b < 0 || 0 + a + b > 9)
 	continue;
