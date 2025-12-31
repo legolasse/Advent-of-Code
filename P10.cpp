@@ -4,7 +4,7 @@
    ...
 
    Translates into:
-   a*x1 + ... + a*xn < 124
+   a*x1 + ... + a*xn = 124
    b*...
    Minimize sum x1+x2+... using Python is easy.
 
@@ -12,85 +12,16 @@
 
    Example 1:
    [.###] (2) (0,1) (1,2) (1,2,3) {9,173,175,13}
-   Immediately discard subsets and Part1-section:
-   (0,1) (1,2,3) {9,173,175,13}
-   So:
-   Minimize A+B from
-   A >= 9
-   A+B >= 173
-   B >= 175
-   B >= 13
-   Notice largest can be considered as equality!
-   A >= 9
-   A+B >= 173
-   B = 175
-   B >= 13
-   Which removes all, but:
-   A >= 9
-   B = 175
-   
-   Example 2 (Part 1 and subsets removed):
-   (0,1,2,3,4) (0,1,2,4,5) {10,11,11,5,10,5}   
-   A+B >= 10
-   A+B >= 11
-   A+B >= 11
-   A >= 5
-   A+B >= 10
-   B >= 5
-   Set largest as equality and remove redundancies:
-   A+B = 11
-   A >= 5
-   B >= 5
-
-   Example 3:
-   (4,6) (1,5) (3,4) (0,5) (0,1,2,4) (1,2,3,6) {34,49,56,171,181,28,52}
-   A     B     C     D     E         F          0  1  2  3   4   5  6
-   D+E   >= 34
-   B+E+F >= 49
-   E+F   >= 56
-   C+F   >= 171
-   A+C+E =  181
-   B+D   >= 28
-   A+F   >= 53
-   Notice B+E+F overruled by E+F:
-   D+E   >= 34
-   E+F   >= 56
-   C+F   >= 171
-   A+C+E =  181
-   B+D   >= 28
-   A+F   >= 53
-   B only in one rule, so set B=0:
-   B = 0
-   D+E   >= 34
-   E+F   >= 56
-   C+F   >= 171
-   A+C+E =  181
-   D     >= 28
-   A+F   >= 53
-   D only in self and D+E rule, so set to 28:
-   B = 0
-   D = 28
-   E     >= 6
-   E+F   >= 56
-   C+F   >= 171
-   A+C+E =  181
-   A+F   >= 53
-   Run A, C, F (E computed) => n^3 OK!
-
-   Example 4:
-   (A+C+  F    ) >= 39
-   (A+  E+F    ) >= 23
-   (A+    F+  I) >= 31
-   (A+  E+  G+I) >= 81
-   (  C+  F+G  ) >= 38
-   (    E+F+  I) >= 28
-   (A+  E+F+G+I) = 100
-   (A+C+E+    I) >= 61
-   
+   Minimize A+B from:
+   B = 9
+   B+C=D = 173
+   A+C+D = 175
+   D = 13
+   Remove single var setters!
 */
 
 typedef unsigned long Encoding;
-typedef pair<Encoding,PI> PEI;
+typedef pair<Encoding,int> EQ;
 
 string decode(Encoding e) {
   bool first = true;
@@ -122,19 +53,10 @@ string decode2(Encoding e) {
   return ss.str();
 }
 
-void print(vector<PEI> &q) {
+void print(vector<EQ> &q) {
   FORUI(q.size()) {
     Encoding e = q[i].first;
-    PI interval = q[i].second;
-    cout << " " << decode(e) << " ";
-    if(interval.second == -1) {
-      cout << ">= " << interval.first;
-    }
-    else if(interval.first==interval.second)
-      cout << "= " << interval.first;
-    else
-      cout << "= [" << interval.first << ";" << interval.second << "]";
-    cout << endl;
+    cout << " " << decode(e) << " = " << q[i].second << endl;
   }
   cout << endl;
 }
@@ -170,173 +92,59 @@ bool part1(const Encoding target, const vector<Encoding> &v, const int vIdx, con
 
 // Part 2:
 
-void removeRedundantInequalities(vector<PEI> &q) {
-  vector<PEI> ret;
+bool removeCovered(vector<EQ> &q, bool &anyRemoved) {
   FORUI(q.size()) {
-    bool keepI = true;
     Encoding ei = q[i].first;
-    PI ii = q[i].second;
     FORUJ(q.size()) {
-      if(i == j)
-	continue;
       Encoding ej = q[j].first;
-      PI ij = q[j].second;
-      if(ei == ej) {
-	// Same encoding:
-	if(ij == ii) {
-	  // And same interval
-	  if(i < j) {
-	    keepI = false;
-	    break; // Keep only one
-	  }
-	}
-	else {
-	  if(ii.first < ij.first) {
-	    keepI = false;
-	    break; // Keep only if more restricting
-	  }
-	}
-      }
-      else if((ei | ej) == ei) {
-	// J within I: Remove I if J is higher count:
-	if(ij.first > ii.first) {
-	  keepI = false;
-	  break;
-	}
-      }
-    }
-    if(keepI)
-      ret.push_back(q[i]);
-  }
-
-  q = ret;
-}
-
-void remove(vector<PEI> &q, int i, int valueI) {
-  Encoding mask = 1 << i;
-  vector<PEI> q2;
-  FORUJ(q.size()) {
-    Encoding e = q[j].first;
-    if((e|mask)!=e) {
-      q2.push_back(q[j]);
-      continue;
-    }
-    PI interval = q[j].second;
-    if(e == mask) {
-      if(interval.first == valueI)
-	q2.push_back(PEI(e,PI(interval.first, interval.first)));
-      continue;
-    }
-    if(interval.first <= valueI)
-      continue; // Smaller than valueI, so no longer usable.
-    e-=mask;
-    if(interval.second == -1)
-      q2.push_back(PEI(e,PI(interval.first-valueI, -1)));
-    else
-      q2.push_back(PEI(e,PI(interval.first-valueI, interval.second-valueI)));
-  }
-  q = q2;
-}
-
-bool removeSingleUseVariables(vector<PEI> &q) {
-  bool anyRemoved = false;
-  FORI(16) { // Assume at most 16 variables
-    Encoding mask = 1 << i;
-    int usages = 0;
-    int setValue = 0;
-    FORUJ(q.size()) {
-      Encoding e = q[j].first;
-      if(e == mask) {
-	setValue = MAX(setValue,q[j].second.first);
-      }
-      else if((e | mask) == e) {
-	// Letter in e: Count
-	usages++;
-      }
-    }
-    if(usages == 1) {
-      // Remove letter:
-      remove(q, i, setValue);
-      anyRemoved = true;
-    }
-  }
-  return anyRemoved;
-}
-
-bool removeCoveredVariables(vector<PEI> &q) {
-  bool anyRemoved = false;
-  FORI(16) { // Assume at most 16 variables
-    Encoding maskI = 1 << i;
-    bool keepI = true;
-    FORJ(16) {
-      if(i == j)
+      if(ei == ej)
 	continue;
-      Encoding maskJ = 1 << j;
-      bool JcoversI = false;
-      FORUK(q.size()) {
-	Encoding e = q[k].first;
-	if((e|maskI) != e)
-	  continue; // I not in e
-	if((e|maskJ) != e) {
-	  JcoversI = false; // J not in e
-	  break;
-	}
-	JcoversI = true;
-      }
+      bool JcoversI = (ej|ei) == ej;
       if(JcoversI) {
-	keepI = false;
-	break;
+	// Remove I from J:
+	if(q[j].second < q[i].second)
+	  return false;
+	q[j].second-=q[i].second;
+	q[j].first-=ei;
+	anyRemoved = true;
       }
-    }
-    if(!keepI) {
-      // Remove I from q:
-      remove(q, i, 0);
-      anyRemoved = true;
     }
   }
-  return anyRemoved;
+  return true;
 }
 
-int part2(vector<PEI> &q, bool first, vector<PI> &solution);
+int part2(vector<EQ> &q, bool first, vector<PI> &solution);
 
-int variableSearch(vector<PEI> &q, int from, int to, bool first, vector<PI> &solution) {
+int variableSearch(const vector<EQ> &q, int from, int to, bool first, vector<PI> &solution) {
   for(int i = from; i <= to; i++) {
     Encoding mask = 1 << i;
-    int minI = 0, maxI = 0;
-    FORUJ(q.size()) {
-      PI interval = q[j].second;
-      maxI = MAX(maxI, interval.first);
-    }
+    int minI = 0, maxI = 999999;
     bool isPresent = false;
     FORUJ(q.size()) {
       Encoding e = q[j].first;
-      PI interval = q[j].second;
+      int val = q[j].second;
       if((e|mask)==e) {
+	if(isPresent && e == mask && val != minI)
+	  return 999999;
 	isPresent = true;
 	// I in e:
 	if(e==mask)
-	  minI = MAX(minI, interval.first); // Single variable I
-	if(interval.second != -1)
-	  maxI = MIN(maxI, interval.second);
+	  minI = val;
+	maxI = MIN(maxI, val);
       }
     }
     if(isPresent) {
       int best = 999999, bestVal = minI;
-      vector<PEI> prevQ;
+      vector<EQ> bestQ;
       for(int val = minI; val <= maxI; val++) {
-	vector<PEI> q2;
+	vector<EQ> q2;
 	// Set value for I:
 	FORUJ(q.size()) {
 	  Encoding e = q[j].first;
 	  if((e&mask)==mask) {
 	    if(e != mask) {
-	      PI interval = q[j].second;
-	      if(interval.first > val) {
-		interval.first-=val;
-		if(interval.second != -1)
-		  interval.second-=val;
-		q2.push_back(PEI(e-mask, interval));
-	      }
+	      int oldVal = q[j].second;
+	      q2.push_back(EQ(e-mask, oldVal-val));
 	    }
 	  }
 	  else
@@ -346,14 +154,14 @@ int variableSearch(vector<PEI> &q, int from, int to, bool first, vector<PI> &sol
 	if(attempt < best) {
 	  best = attempt;
 	  bestVal = val;
-	  prevQ = q2;
+	  bestQ = q2;
 	}
-	else
-	  break; // Break early due to simple linear dependencies
+	//else
+	//  break; // Break early due to linear dependencies
       }
       if(first) {
 	solution.push_back(PI(i,bestVal));
-	part2(prevQ, true, solution); // Add remaing to solution
+	part2(bestQ, true, solution); // Add remaing to solution
       }
       return best;
     }
@@ -363,29 +171,20 @@ int variableSearch(vector<PEI> &q, int from, int to, bool first, vector<PI> &sol
 
 /*
   Perform reductions:
-  1) Remove redundant inequalities
-  2) Remove letters that are only used once
-  3) Remove letters that are alway accompanied by another
+  1) Remove letters that are only used once
+  2) Remove equations that are alway within others
  */
-int part2(vector<PEI> &q, bool first, vector<PI> &solution) {
-  unsigned int sizeBefore = q.size();
-  removeRedundantInequalities(q);
-  if(first && q.size() != sizeBefore) {
-    cout << "After removal of redundancies:" << endl;
-    print(q);
-  }
-  bool anyRemoved1 = removeSingleUseVariables(q);
-  if(first && anyRemoved1) {
-    cout << "After single use variable removal:" << endl;
-    print(q);
-  }
-  bool anyRemoved2 = removeCoveredVariables(q);
-  if(first && anyRemoved2) {
+int part2(vector<EQ> &q, bool first, vector<PI> &solution) {
+  bool anyRemoved = false;
+  bool ok = removeCovered(q, anyRemoved);
+  if(!ok)
+    return 999999;
+  if(first && anyRemoved) {
     cout << "After covered variable removal:" << endl;
     print(q);
   }
   
-  if(!anyRemoved1 && !anyRemoved2 && sizeBefore == q.size()) {
+  if(!anyRemoved) {
     // Perform variable search!
     int minVariable = 16, maxVariable = 0;
     FORI(16) {
@@ -449,7 +248,7 @@ int main() {
 
     // Part 2:
     // Transform input into inequalities:
-    vector<PEI> q;
+    vector<EQ> q;
     int maxCount = 0;
     FORUI(counts.size()) {
       Encoding e = 0;
@@ -457,7 +256,7 @@ int main() {
 	if((v[j] & (1<<i)) != 0)
 	  e += 1 << j;
       }
-      q.push_back(PEI(e, PI(counts[i], -1)));
+      q.push_back(EQ(e, counts[i]));
       maxCount = MAX(maxCount, counts[i]);
     }
     cout << "Part 2. Initial problem:" << endl;
@@ -490,7 +289,7 @@ int main() {
     cout << "Result counts: ";
     FORUI(counts.size()) {
       cout << cur[i] << " ";
-      if(cur[i] < counts[i]) {
+      if(cur[i] != counts[i]) {
 	cerr << "ERROR IN PROBLEM " << problem << " FOR POSITION " << i << ": " << cur[i] << " < " << counts[i] << endl;
 	return 1;
       }
